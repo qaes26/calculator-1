@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>آلة حاسبة لرهف 💖</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Calculator Styles */
+        .calculator {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border-radius: 2rem;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.1), 
+                        inset 0 0 0 1px rgba(255,255,255,0.5);
+            transition: all 0.5s ease-in-out;
+        }
+
+        .calc-btn {
+            background: #f8fafc;
+            border-radius: 1rem;
+            box-shadow: 5px 5px 10px #e2e8f0, -5px -5px 10px #ffffff;
+            transition: all 0.2s;
+        }
+        
+        .calc-btn:active {
+            box-shadow: inset 5px 5px 10px #e2e8f0, inset -5px -5px 10px #ffffff;
+            transform: scale(0.95);
+        }
+
+        .calc-btn.op { background: #fee2e2; color: #ef4444; }
+        .calc-btn.equal { background: #ec4899; color: white; box-shadow: 0 10px 20px rgba(236, 72, 153, 0.3); }
+
+        /* Surprise Container Styles */
+        #surprise-container {
+            display: none;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 99%, #fecfef 100%);
+            position: fixed;
+            inset: 0;
+            z-index: 50;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+        }
+
+        .love-msg {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            background: rgba(255, 255, 255, 0.85);
+            padding: 1.5rem;
+            border-radius: 1.5rem;
+            margin-bottom: 1rem;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 10px 25px rgba(236, 72, 153, 0.15);
+            border-right: 4px solid #ec4899;
+            text-align: right;
+        }
+
+        .love-msg.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Floating Hearts Animation */
+        .heart {
+            position: absolute;
+            font-size: 2rem;
+            animation: float-up 4s linear infinite;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        @keyframes float-up {
+            0% { transform: translateY(100vh) scale(0); opacity: 1; }
+            100% { transform: translateY(-100px) scale(1.5) rotate(45deg); opacity: 0; }
+        }
+
+        .vibrate {
+            animation: vibrate 0.3s linear both;
+        }
+
+        @keyframes vibrate {
+            0% { transform: translate(0) }
+            20% { transform: translate(-2px, 2px) }
+            40% { transform: translate(-2px, -2px) }
+            60% { transform: translate(2px, 2px) }
+            80% { transform: translate(2px, -2px) }
+            100% { transform: translate(0) }
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <!-- Main Content -->
+    <main class="flex-grow flex items-center justify-center p-4 relative z-10">
+        
+        <!-- Calculator Interface -->
+        <div id="calculator-ui" class="calculator w-full max-w-sm p-6 relative">
+            
+            <!-- Question Prompt -->
+            <div class="bg-pink-50 border border-pink-100 rounded-xl p-4 mb-6 text-center shadow-sm">
+                <span class="text-2xl block mb-2">🤔</span>
+                <p class="text-pink-600 font-bold leading-tight">
+                    سؤال سريع يا رهف: <br>
+                    شو الرقمين اللي لو ضربناهم ببعض بيعطونا 9؟
+                </p>
+            </div>
+
+            <!-- Screen -->
+            <div class="bg-gray-100 rounded-2xl h-20 mb-6 flex items-center justify-end px-4 shadow-inner overflow-hidden">
+                <div id="screen" class="text-4xl font-bold text-gray-700 tracking-widest"></div>
+            </div>
+
+            <!-- Keypad -->
+            <div class="grid grid-cols-4 gap-4">
+                <!-- Row 1 -->
+                <button onclick="press('7')" class="calc-btn h-14 text-xl font-bold text-gray-600">7</button>
+                <button onclick="press('8')" class="calc-btn h-14 text-xl font-bold text-gray-600">8</button>
+                <button onclick="press('9')" class="calc-btn h-14 text-xl font-bold text-gray-600">9</button>
+                <button onclick="press('÷')" class="calc-btn op h-14 text-xl font-bold">÷</button>
+                
+                <!-- Row 2 -->
+                <button onclick="press('4')" class="calc-btn h-14 text-xl font-bold text-gray-600">4</button>
+                <button onclick="press('5')" class="calc-btn h-14 text-xl font-bold text-gray-600">5</button>
+                <button onclick="press('6')" class="calc-btn h-14 text-xl font-bold text-gray-600">6</button>
+                <button onclick="press('×')" class="calc-btn op h-14 text-2xl font-bold">×</button>
+                
+                <!-- Row 3 -->
+                <button onclick="press('1')" class="calc-btn h-14 text-xl font-bold text-gray-600">1</button>
+                <button onclick="press('2')" class="calc-btn h-14 text-xl font-bold text-gray-600">2</button>
+                <button onclick="press('3')" class="calc-btn h-14 text-xl font-bold text-gray-600">3</button>
+                <button onclick="press('-')" class="calc-btn op h-14 text-3xl font-bold">-</button>
+                
+                <!-- Row 4 -->
+                <button onclick="clearScreen()" class="calc-btn h-14 text-xl font-bold text-rose-500">C</button>
+                <button onclick="press('0')" class="calc-btn h-14 text-xl font-bold text-gray-600">0</button>
+                <button onclick="calculate()" class="calc-btn equal h-14 text-2xl font-bold col-span-2 shadow-lg">=</button>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Surprise Container (Hidden initially) -->
+    <div id="surprise-container" class="overflow-y-auto pb-20">
+        <div class="max-w-md w-full mx-auto relative z-10 pt-10 px-4 flex flex-col items-center">
+            
+            <div id="check-mark" class="text-7xl mb-6 opacity-0 transform scale-50 transition-all duration-500 ease-out bg-white rounded-full p-4 shadow-xl text-green-500">
+                ✅
+            </div>
+            
+            <h1 class="text-4xl font-extrabold text-white drop-shadow-md mb-8 text-center text-pink-600 glow-text">صح يا عمري!</h1>
+
+            <!-- Flirting Messages -->
+            <div id="msg-1" class="love-msg">
+                <p class="text-lg text-gray-800 font-semibold"><span class="text-2xl">✨</span> 3×3=9 صح... بس بتعرفي شو المعادلة الأهم بحياتي؟</p>
+            </div>
+
+            <div id="msg-2" class="love-msg">
+                <p class="text-xl text-pink-600 font-bold text-center">أنا + إنتي = سعادة ما إلها نهاية ❤️</p>
+            </div>
+
+            <div id="msg-3" class="love-msg">
+                <p class="text-lg text-gray-800"><span class="text-2xl">👀</span> عيونك لحالهم بدهم آلة حاسبة متطورة لتحسب كمية الجمال اللي فيهم، وبرضو ما رح تكفي!</p>
+            </div>
+
+            <div id="msg-4" class="love-msg">
+                <p class="text-lg text-gray-800"><span class="text-2xl">😊</span> ضحكتك بتلغي كل قوانين الرياضيات، بتخلي الواحد ينسى كيف يجمع ويطرح، وما بيتذكر إلا اسمك.</p>
+            </div>
+
+            <div id="msg-5" class="love-msg bg-gradient-to-r from-pink-500 to-rose-400 border-none text-white text-center">
+                <p class="text-2xl font-bold drop-shadow-md">بحبك يا أجمل رهف بالدنيا 💖</p>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Footer Signature -->
+    <footer class="py-6 text-center text-gray-500 relative z-50">
+        <div class="w-24 h-px bg-gradient-to-r from-transparent via-gray-400 to-transparent mx-auto mb-3"></div>
+        <p class="text-sm font-medium">تم التصميم والبرمجة بكل حُب ❤️</p>
+        <p class="text-lg font-bold text-pink-600 mt-1">من إعداد: قيس جازي</p>
+    </footer>
+
+    <script>
+        const screen = document.getElementById('screen');
+        const calcUI = document.getElementById('calculator-ui');
+        const surpriseContainer = document.getElementById('surprise-container');
+        let isComplete = false;
+
+        function press(val) {
+            if(isComplete) return;
+            // Limit length
+            if(screen.innerText.length < 10) {
+                screen.innerText += val;
+            }
+        }
+
+        function clearScreen() {
+            screen.innerText = '';
+        }
+
+        function calculate() {
+            if(isComplete) return;
+            
+            const equation = screen.innerText;
+            
+            // Check for exactly "3×3"
+            if (equation === '3×3' || equation === '3*3') {
+                triggerSurprise();
+            } else {
+                // Wrong answer animation
+                calcUI.classList.add('vibrate');
+                const oldText = screen.innerText;
+                screen.innerHTML = '<span class="text-rose-500 text-2xl">جربي 3×3 يا روحي 😉</span>';
+                
+                setTimeout(() => {
+                    calcUI.classList.remove('vibrate');
+                    screen.innerText = '';
+                }, 1500);
+            }
+        }
+
+        function triggerSurprise() {
+            isComplete = true;
+            
+            // 1. Hide Calculator UI smoothly
+            calcUI.style.transform = 'scale(0.8)';
+            calcUI.style.opacity = '0';
+            
+            setTimeout(() => {
+                calcUI.style.display = 'none';
+                
+                // 2. Show Surprise Container
+                surpriseContainer.style.display = 'flex';
+                // Trigger reflow
+                void surpriseContainer.offsetWidth;
+                surpriseContainer.style.opacity = '1';
+                document.body.style.background = 'none'; // Remove body background so fixed container shows fully
+
+                startSequence();
+            }, 500);
+        }
+
+        function startSequence() {
+            // Show Checkmark
+            setTimeout(() => {
+                const check = document.getElementById('check-mark');
+                check.style.opacity = '1';
+                check.style.transform = 'scale(1)';
+            }, 300);
+
+            // Cascade Messages
+            const messages = [
+                document.getElementById('msg-1'),
+                document.getElementById('msg-2'),
+                document.getElementById('msg-3'),
+                document.getElementById('msg-4'),
+                document.getElementById('msg-5')
+            ];
+
+            messages.forEach((msg, index) => {
+                setTimeout(() => {
+                    msg.classList.add('show');
+                    // Scroll to bottom as messages appear
+                    surpriseContainer.scrollTo({
+                        top: surpriseContainer.scrollHeight,
+                        behavior: 'smooth'
+                    });
+                }, 1500 + (index * 1800)); // Delay between each message
+            });
+
+            // Start floating hearts
+            setInterval(createHeart, 300);
+        }
+
+        function createHeart() {
+            if(!isComplete) return;
+            const hearts = ['💖', '💕', '🌸', '✨', '❤️'];
+            const heart = document.createElement('div');
+            heart.classList.add('heart');
+            heart.innerText = hearts[Math.floor(Math.random() * hearts.length)];
+            
+            // Random styling
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.animationDuration = (Math.random() * 3 + 3) + 's';
+            const size = Math.random() * 1.5 + 1;
+            heart.style.fontSize = size + 'rem';
+            
+            surpriseContainer.appendChild(heart);
+            
+            setTimeout(() => {
+                heart.remove();
+            }, 6000);
+        }
+    </script>
+</body>
+</html>
+
